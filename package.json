@@ -2,7 +2,7 @@
   "name": "externalities",
   "version": "0.0.0",
   "description": " you have too many nalities.",
-  "main": "index.js",
+  "main": "lib",
   "scripts": {
     "test": "make test"
   },
@@ -24,9 +24,13 @@
   },
   "dependencies": {
     "through": "~2.3.4",
-    "grasp": "~0.2.1"
+    "grasp": "~0.2.1",
+    "find-parent-dir": "~0.1.0",
+    "escodegen": "~1.1.0",
+    "prelude-ls": "~1.0.3"
   },
   "devDependencies": {
-    "make-livescript": "0.0.0"
+    "make-livescript": "0.0.0",
+    "LiveScript": "~1.2.0"
   }
 }
