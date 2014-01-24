@@ -1,0 +1,32 @@
+{
+  "name": "externalities",
+  "version": "0.0.0",
+  "description": " you have too many nalities.",
+  "main": "index.js",
+  "scripts": {
+    "test": "make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/quarterto/Externalites.git"
+  },
+  "keywords": [
+    "browserify",
+    "external",
+    "starndalone",
+    "bundle",
+    "dependencies"
+  ],
+  "author": "Matt Brennan <mwrbrennan@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/quarterto/Externalites/issues"
+  },
+  "dependencies": {
+    "through": "~2.3.4",
+    "grasp": "~0.2.1"
+  },
+  "devDependencies": {
+    "make-livescript": "0.0.0"
+  }
+}
