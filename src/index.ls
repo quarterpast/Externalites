@@ -74,6 +74,9 @@ exports.pre = (bundle, file)-->
 		externalise bundle, conf
 		@queue data
 
+add-uniq = (xs, x)-> xs ++ if x in xs then [] else x
+uniq = (.reduce add-uniq, [])
+
 exports.post = ->
 	data, end <- end-through
 	{removed, vars, code} = remove-requires (Object.keys confs), data
@@ -81,9 +84,9 @@ exports.post = ->
 	{body}:x = esprima.parse code
 	@queue generate umd do
 		confs.global-export
-		makers.params vars
-		makers.requires module-confs.map (.commonjs)
-		makers.defines  module-confs.map (.requirejs)
-		makers.globals  module-confs.map (.globalvar)
+		makers.params   uniq vars
+		makers.requires uniq module-confs.map (.commonjs)
+		makers.defines  uniq module-confs.map (.requirejs)
+		makers.globals  uniq module-confs.map (.globalvar)
 		body
 	end!
