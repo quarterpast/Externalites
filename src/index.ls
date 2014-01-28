@@ -1,60 +1,88 @@
 require! {
-	grasp
 	through
 	path
 	escodegen.generate
+	esprima
+	falafel
 	\find-parent-dir
-	'./replacement'
-	'prelude-ls'.split-at
+	'./umd'
+	'./makers'
 }
 
-lines   = (.split '\n')
-unlines = (.join '\n')
+is-require-assign = ->
+	it.type is \AssignmentExpression
+	and it.right.type is \CallExpression
+	and it.right.callee.name is \require
 
-do-replace = (code, nodes)->
-	c-lines = lines code
-	for {loc}:node in nodes
-		replacement = generate node
-		line = c-lines[loc.start.line - 1]
-		[start, end] = split-at loc.start.column, line
-		[,end] = split-at loc.end.column, end
-		c-lines[loc.start.line - 1] = "#start#replacement#end"
+is-require-decl = ->
+	it.type is \VariableDeclarator
+	and it.init.type is \CallExpression
+	and it.init.callee.name is \require
 
-	unlines c-lines
+get-module-id = (node)-> match node
+	| is-require-assign => node.right.arguments.0.value
+	| is-require-decl   => node.init.arguments.0.value
 
-create-replacements = (conf, nodes)->
-	nodes.map (node)->
-		id = node.arguments.0.value
-		if conf[id]?
-			(replacement that) import {node.loc}
-		else node
+get-var-name = (node)-> match node
+	| is-require-assign => node.left.name
+	| is-require-decl   => node.id.name
 
-replacer = (conf, code)->
-	create-replacements conf, grasp.search do
-		\equery
-		'require(_str)'
-		code
+remove-requires = (modules, src)-->
+	removed = []
+	vars = []
+
+	code = falafel src, (node)->
+		if (is-require-assign or is-require-decl) node and (get-module-id node) in modules
+			node.remove!
+			removed.push get-module-id node
+			vars.push get-var-name node
+
+	{removed, code, vars}
 
 externalise = (bundle, conf)->
 	for k,{commonjs, requirejs} of conf
 		bundle.exclude requirejs
 		bundle.exclude commonjs
 
-module.exports = (bundle)->
-	(file)->
-		data = ''
-		through do
-			(data +=)
-			->
-				find-parent-dir file, 'package.json', (err, dir)~>
-					if err?
-						@emit \error that
-					else
-						try
-							conf = (require path.join dir, 'package.json').externalities
-							externalise bundle, conf
-							nodes = replacer conf, data
-							@queue do-replace data, nodes
-						catch => @emit \error e
-					@queue null
+end-through = (fn)->
+	data = ''
+	through do
+		(data +=)
+		->
+			err <~ fn.call this, data
+			@emit \error that if err?
+			@queue null
 
+catch-or-cb = (cb, fn)->
+	(err, res)->
+		if err?
+			cb that
+		else
+			try
+				cb null fn.call this, res
+			catch
+				cb err
+
+confs = {}
+
+exports.pre = (bundle, file)-->
+	data, end <- end-through
+	find-parent-dir file, 'package.json', catch-or-cb end, (dir)~>
+		conf = (require path.join dir, 'package.json').externalities
+		confs import conf
+		externalise bundle, conf
+		@queue data
+
+exports.post = ->
+	data, end <- end-through
+	{removed, vars, code} = remove-requires (Object.keys confs), data
+	module-confs = removed.map (confs.)
+	{body}:x = esprima.parse code
+	@queue generate umd do
+		confs.global-export
+		makers.params vars
+		makers.requires module-confs.map (.commonjs)
+		makers.defines  module-confs.map (.requirejs)
+		makers.globals  module-confs.map (.globalvar)
+		body
+	end!

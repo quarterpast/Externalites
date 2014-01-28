@@ -27,10 +27,21 @@
     "grasp": "~0.2.1",
     "find-parent-dir": "~0.1.0",
     "escodegen": "~1.1.0",
-    "prelude-ls": "~1.0.3"
+    "prelude-ls": "~1.0.3",
+    "falafel": "git+ssh://git@github.com:nanodeath/node-falafel.git#delete-api-pr",
+    "esprima": "~1.0.4"
   },
   "devDependencies": {
     "make-livescript": "0.0.0",
-    "LiveScript": "~1.2.0"
+    "LiveScript": "~1.2.0",
+    "browserify": "~3.24.1"
+  },
+  "externalities": {
+    "globalExport": "Test",
+    "jquery": {
+      "commonjs": "jquery-browser",
+      "requirejs": "jquery",
+      "globalvar": "jQuery"
+    }
   }
 }
