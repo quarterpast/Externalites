@@ -16,6 +16,7 @@ is-require-assign = ->
 
 is-require-decl = ->
 	it.type is \VariableDeclarator
+	and it.init?
 	and it.init.type is \CallExpression
 	and it.init.callee.name is \require
 
