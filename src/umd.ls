@@ -5,8 +5,9 @@ module.exports = umd = (global-var, params, requires, defines, globals, body)->
 		type: \CallExpression
 		callee:
 			type: \FunctionExpression
-			params:
-				* type: \Identifier name: \definition
+			params: [
+				type: \Identifier name: \definition
+			]
 			body:
 				type: \BlockStatement
 				body: [
