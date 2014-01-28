@@ -1,4 +1,4 @@
-module.exports = umd = (global-var, params, requires, defines, globals, body)->
+module.exports = umd = (global-var, params, requires, defines, globals, body, main-module)->
 	type: \UnaryExpression
 	operator: \!
 	argument:
@@ -75,5 +75,12 @@ module.exports = umd = (global-var, params, requires, defines, globals, body)->
 		arguments: [
 			type: \FunctionExpression
 			params: params
-			body: type: \BlockStatement body: [type: \ReturnStatement argument:body]
+			body: type: \BlockStatement body: [
+				type: \ReturnStatement argument:
+					type: \CallExpression
+					callee: body
+					arguments: [
+						type: \Literal value: main-module
+					]
+			]
 		]

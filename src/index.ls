@@ -66,8 +66,11 @@ catch-or-cb = (cb, fn)->
 				cb err
 
 confs = {}
+var main-module
 
 exports.pre = (bundle, file)-->
+	bundle.on \row -> main-module ?:= it.index if it.entry
+
 	data, end <- end-through
 	find-parent-dir file, 'package.json', catch-or-cb end, (dir)~>
 		conf = (require path.join dir, 'package.json').externalities
@@ -90,4 +93,5 @@ exports.post = ->
 		makers.defines  uniq module-confs.map (.requirejs)
 		makers.globals  uniq module-confs.map (.globalvar)
 		body.0.expression
+		main-module
 	end!
