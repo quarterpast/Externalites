@@ -11,6 +11,7 @@ require! {
 
 is-require-assign = ->
 	it.type is \AssignmentExpression
+	and it.left.type is \Identifier
 	and it.right.type is \CallExpression
 	and it.right.callee.name is \require
 
@@ -82,7 +83,6 @@ exports.post = ->
 	{removed, vars, code} = remove-requires (Object.keys confs), data
 	module-confs = removed.map (confs.)
 	{body} = esprima.parse code
-	console.log body.0
 	@queue generate umd do
 		confs.global-export
 		makers.params   uniq vars
