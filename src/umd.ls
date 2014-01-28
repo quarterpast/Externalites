@@ -72,5 +72,7 @@ module.exports = umd = (global-var, params, requires, defines, globals, body)->
 									arguments: globals
 				]
 		arguments: [
-			type: \FunctionExpression body: {type: \BlockStatement body} params: params
+			type: \FunctionExpression
+			params: params
+			body: type: \BlockStatement body: [type: \ReturnStatement argument:body]
 		]

@@ -81,12 +81,13 @@ exports.post = ->
 	data, end <- end-through
 	{removed, vars, code} = remove-requires (Object.keys confs), data
 	module-confs = removed.map (confs.)
-	{body}:x = esprima.parse code
+	{body} = esprima.parse code
+	console.log body.0
 	@queue generate umd do
 		confs.global-export
 		makers.params   uniq vars
 		makers.requires uniq module-confs.map (.commonjs)
 		makers.defines  uniq module-confs.map (.requirejs)
 		makers.globals  uniq module-confs.map (.globalvar)
-		body
+		body.0.expression
 	end!
