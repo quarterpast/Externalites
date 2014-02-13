@@ -4,7 +4,8 @@
   "description": " you have too many nalities.",
   "main": "lib",
   "scripts": {
-    "test": "make test"
+    "test": "make test",
+    "prepublish": "make"
   },
   "repository": {
     "type": "git",
