@@ -34,7 +34,9 @@
   "devDependencies": {
     "make-livescript": "0.0.0",
     "LiveScript": "~1.2.0",
-    "browserify": "~3.28.2"
+  },
+  "peerDependencies": {
+    "browserify": "^3.28"
   },
   "externalities": {
     "globalExport": "Test",
