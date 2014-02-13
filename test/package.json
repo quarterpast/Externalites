@@ -1,0 +1,15 @@
+{
+  "name": "externalities-test-pkg",
+  "version": "0.0.0",
+  "externalities": {
+    "underscore": {
+      "commonjs": "underscore",
+      "requirejs": "underscore",
+      "globalvar": "_"
+    },
+    "globalExport": "Test"
+  },
+  "devDependencies": {
+    "browserify": "~3.28.2"
+  }
+}
