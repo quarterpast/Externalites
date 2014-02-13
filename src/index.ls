@@ -1,5 +1,5 @@
 require! {
-	through
+	\end-through
 	path
 	escodegen.generate
 	esprima
@@ -45,15 +45,6 @@ externalise = (bundle, conf)->
 	for k,{commonjs, requirejs} of conf
 		bundle.exclude requirejs
 		bundle.exclude commonjs
-
-end-through = (fn)->
-	data = ''
-	through do
-		(data +=)
-		->
-			err <~ fn.call this, data
-			@emit \error that if err?
-			@queue null
 
 catch-or-cb = (cb, fn)->
 	(err, res)->

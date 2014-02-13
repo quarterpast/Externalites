@@ -27,7 +27,8 @@
     "find-parent-dir": "~0.1.0",
     "escodegen": "~1.1.0",
     "falafel": "git+ssh://git@github.com:nanodeath/node-falafel.git#delete-api-pr",
-    "esprima": "~1.0.4"
+    "esprima": "~1.0.4",
+    "end-through": "0.0.0"
   },
   "devDependencies": {
     "make-livescript": "0.0.0",
