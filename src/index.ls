@@ -4,6 +4,7 @@ require! {
 	escodegen.generate
 	esprima
 	falafel
+	derequire
 	\find-parent-dir
 	'./umd'
 	'./makers'
@@ -46,6 +47,11 @@ externalise = (bundle, conf)->
 		bundle.exclude requirejs
 		bundle.exclude commonjs
 
+dereq = ->
+	data, end <- end-through
+	@queue derequire data
+	end!
+
 catch-or-cb = (cb, fn)->
 	(err, res)->
 		if err?
@@ -59,20 +65,10 @@ catch-or-cb = (cb, fn)->
 confs = {}
 var main-module
 
-exports.pre = (bundle, file)-->
-	bundle.on \row -> main-module ?:= it.index if it.entry
-
-	data, end <- end-through
-	find-parent-dir file, 'package.json', catch-or-cb end, (dir)~>
-		conf = (require path.join dir, 'package.json').externalities
-		confs import conf
-		externalise bundle, conf
-		@queue data
-
 add-uniq = (xs, x)-> xs ++ if x in xs then [] else x
 uniq = (.reduce add-uniq, [])
 
-exports.post = ->
+post = ->
 	data, end <- end-through
 	{removed, vars, code} = remove-requires (Object.keys confs), data
 	module-confs = removed.map (confs.)
@@ -86,3 +82,22 @@ exports.post = ->
 		body.0.expression
 		main-module
 	end!
+
+module.exports = (b, opts)->
+	b.on \row -> main-module ?:= it.index if it.entry
+	b.transform (file)->
+		data, end <- end-through
+		find-parent-dir file, 'package.json', catch-or-cb end, (dir)~>
+			conf = (require path.join dir, 'package.json').externalities
+			confs import conf
+			externalise b, conf
+			@queue data
+
+	piped = false
+	bundle = b.bundle
+	b.bundle = ->
+		b = bundle ...
+		unless piped
+			piped := true
+			b.pipe post! .pipe dereq!
+		else b
