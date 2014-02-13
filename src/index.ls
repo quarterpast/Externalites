@@ -22,6 +22,11 @@ is-require-decl = ->
 	and it.init.type is \CallExpression
 	and it.init.callee.name is \require
 
+is-empty-decl = ->
+	it.type is \VariableDeclarator
+	and it.id?
+	and not it.init?
+
 get-module-id = (node)-> match node
 	| is-require-assign => node.right.arguments.0.value
 	| is-require-decl   => node.init.arguments.0.value
@@ -29,6 +34,7 @@ get-module-id = (node)-> match node
 get-var-name = (node)-> match node
 	| is-require-assign => node.left.name
 	| is-require-decl   => node.id.name
+	| is-empty-decl     => node.id.name
 
 remove-requires = (modules, src)-->
 	removed = []
@@ -41,6 +47,10 @@ remove-requires = (modules, src)-->
 			vars.push get-var-name node
 
 	{removed, code, vars}
+
+remove-vars = (src, vars)-->
+	falafel src, (node)->
+		node.remove! if is-empty-decl node and (get-var-name node) in vars
 
 externalise = (bundle, conf)->
 	for k,{commonjs, requirejs} of conf
@@ -71,8 +81,9 @@ uniq = (.reduce add-uniq, [])
 post = ->
 	data, end <- end-through
 	{removed, vars, code} = remove-requires (Object.keys confs), data
+	final = remove-vars code.to-string!, vars
 	module-confs = removed.map (confs.)
-	{body} = esprima.parse code
+	{body} = esprima.parse final
 	@queue generate umd do
 		confs.global-export
 		makers.params   uniq vars

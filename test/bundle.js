@@ -33,6 +33,7 @@
         ],
         2: [
             function (_dereq_, module, exports) {
+                ;
                 var b = _dereq_('./b');
             },
             { './b': 1 }

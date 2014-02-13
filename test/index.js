@@ -1,2 +1,3 @@
-var _ = require('underscore');
+var _;
+_ = require('underscore');
 var b = require('./b');
