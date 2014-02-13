@@ -1,6 +1,6 @@
 {
   "name": "externalities",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": " you have too many nalities.",
   "main": "lib",
   "scripts": {
@@ -27,7 +27,7 @@
     "through": "~2.3.4",
     "find-parent-dir": "~0.1.0",
     "escodegen": "~1.1.0",
-    "falafel": "git+ssh://git@github.com:nanodeath/node-falafel.git#delete-api-pr",
+    "falafel": "git+https://github.com/nanodeath/node-falafel.git#delete-api-pr",
     "esprima": "~1.0.4",
     "end-through": "0.0.1",
     "derequire": "~0.6.0"
