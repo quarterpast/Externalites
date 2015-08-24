@@ -37,7 +37,7 @@
     "LiveScript": "~1.2.0"
   },
   "peerDependencies": {
-    "browserify": "^3.28"
+    "browserify": ">=3.28"
   },
   "externalities": {
     "globalExport": "Test",
